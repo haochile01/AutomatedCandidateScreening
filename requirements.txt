@@ -5,4 +5,3 @@ xgboost==2.0.3
 pdfplumber==0.11.0
 spacy==3.7.4
 scikit-learn==1.2.2
-base64==1.0.0
