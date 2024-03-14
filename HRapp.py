@@ -19,15 +19,15 @@ import json
 
 
 # Load the trained model
-nlp = spacy.load("/content/Entity-Recognition-In-Resumes-SpaCy/model")
+nlp = spacy.load("/Entity-Recognition-In-Resumes-SpaCy/model")
 
 
 models_paths = {
-    'JD1': '/content/xgb_model_JD_JD1.pkl',
-    'JD2': '/content/xgb_model_JD_JD2.pkl',
-    'JD3': '/content/xgb_model_JD_JD3.pkl',
-    'JD4': '/content/xgb_model_JD_JD4.pkl',
-    'JD5': '/content/xgb_model_JD_JD5.pkl',
+    'JD1': '/xgb_model_JD_JD1.pkl',
+    'JD2': '/xgb_model_JD_JD2.pkl',
+    'JD3': '/xgb_model_JD_JD3.pkl',
+    'JD4': '/xgb_model_JD_JD4.pkl',
+    'JD5': '/xgb_model_JD_JD5.pkl',
 }
 
 
@@ -45,7 +45,7 @@ def save_jd_to_file(jd_db, filename):
         json.dump(jd_db, file, indent=4)
 
 # Khởi tạo JD DB từ tập tin
-jd_db = load_jd_from_file('/content/jd_data.json')
+jd_db = load_jd_from_file('/jd_data.json')
 
 
 #Các hàm tiền xử lý pdf file
