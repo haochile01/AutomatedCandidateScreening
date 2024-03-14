@@ -4,6 +4,7 @@ from datetime import datetime
 from spacy.training import Example
 from spacy.util import minibatch, compounding
 from spacy.scorer import Scorer
+from PIL import Image
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -57,6 +58,17 @@ def pdf_to_text(pdf_path):
             text += page.extract_text() + '\n'  # Thêm xuống dòng giữa các trang
     return text
 
+def pdf_to_images(pdf_file):
+    images = []
+    with pdfplumber.open(pdf_file) as pdf:
+        for page in pdf.pages:
+            # Convert each page to an image
+            pil_image = page.to_image()
+            # Convert PIL image to numpy array
+            np_image = pil_image._repr_png_()
+            # Append the image to the list
+            images.append(np_image)
+    return images
 
 # tạo profile ứng cử viên
 
@@ -340,17 +352,28 @@ def main():
 
     if uploaded_files:
         for uploaded_file in uploaded_files:
-            # Temporary workaround to display PDF file
-            with open(uploaded_file.name, "wb") as f:
-                f.write(uploaded_file.getbuffer())
+            st.write(f"## {uploaded_file.name}")
+            # Convert PDF to list of images
+            images = pdf_to_images(uploaded_file)
 
-            # Show download button to view PDF
-            with open(uploaded_file.name, "rb") as pdf_file:
-                base64_pdf = base64.b64encode(pdf_file.read()).decode('utf-8')
-
-            pdf_display = f'<embed src="data:application/pdf;base64,{base64_pdf}" width="700" height="1000" type="application/pdf">'
-            st.markdown(f"### Content of {uploaded_file.name}:")
-            st.markdown(pdf_display, unsafe_allow_html=True)
+            # Display each page as an image with a single "Next" button
+            page_number = st.empty()  # Placeholder to display current page number
+            current_page = 0
+            total_pages = len(images)
+            while current_page < total_pages:
+                st.image(images[current_page], caption=f"Page {current_page+1}", use_column_width=True)
+                # Display current page number
+                page_number.write(f"Page {current_page+1} of {total_pages}")
+                # Display "Next" button with a unique key
+                if current_page < total_pages - 1:
+                    if st.button("Next" + str(current_page)):
+                        current_page += 1
+                        st.empty()  # Clear previous image and page number
+                    else:
+                        break  # Exit loop if "Next" button is not clicked
+                else:
+                    st.write("End of document")
+                    break
 
             # Xử lý nội dung từng tệp PDF
             text = pdf_to_text(uploaded_file)
