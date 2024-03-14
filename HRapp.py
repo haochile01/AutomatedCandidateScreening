@@ -19,7 +19,7 @@ import json
 
 
 # Load the trained model
-nlp = spacy.load("AutomatedCandidateScreening/Entity-Recognition-In-Resumes-SpaCy (1)/model")
+nlp = spacy.load("AutomatedCandidateScreening/model")
 
 
 models_paths = {
