@@ -1,0 +1,32 @@
+{
+    "JD3": {
+        "Title": "Senior Software Engineer",
+        "Skills": "Java, Go Lang, Oracle PL-SQL, Salesforce APEX development, Cloud Services Management, DevOps practices, Data Structures and Algorithms, Experience with version control systems (e.g., SVN, Git)",
+        "Requirements": "5+ years in software development with a focus on cloud-based solutions and Java programming. Previous experience in Salesforce or similar CRM platforms is advantageous.",
+        "Responsibilities": "Develop and maintain scalable cloud solutions, contribute to all phases of the development lifecycle, collaborate with cross-functional teams to define and achieve project goals, ensure performance optimization and security compliance of applications. Flexible / Remote options available. B.E / B.Tech in Computer Science, IT, or related fields."
+    },
+    "JD4": {
+        "Title": "Data Analyst",
+        "Skills": "Proficiency in SQL, R, Python, Tableau, Power BI, experience with data modeling, ETL processes, and business intelligence platforms, understanding of financial and operational data sets.",
+        "Requirements": "3+ years in data analysis or business intelligence roles with a focus on data-driven decision-making processes.",
+        "Responsibilities": "Analyze and interpret complex data sets, develop and maintain BI dashboards, collaborate with stakeholders to identify business requirements and insights, manage data integrity and security. Bengaluru, Karnataka (willingness to relocate appreciated). Bachelor\u2019s or Master\u2019s degree in Statistics, Mathematics, Computer Science, or related fields."
+    },
+    "JD5": {
+        "Title": "SAP FICO Consultant",
+        "Skills": "Deep knowledge of SAP FICO modules, experience with S/4HANA, understanding of financial processes and accounting principles, ability to manage SAP projects including upgrades and migrations.",
+        "Requirements": "Minimum of 3 years in SAP FICO consultancy, with documented success in past implementation or support projects.",
+        "Responsibilities": "Implement and configure SAP FICO solutions, provide user training and support, liaise with stakeholders to ensure that SAP solutions meet business requirements. Multiple locations available. Bachelor\u2019s in Finance, Accounting, IT, or related field; SAP certification is a plus."
+    },
+    "JD6": {
+        "Title": "Systems Engineer",
+        "Skills": "Strong understanding of network infrastructure, experience with Windows/Linux environments, knowledge of cybersecurity practices, familiarity with cloud services (Azure, AWS).",
+        "Requirements": "At least 2 years of experience in IT infrastructure or network security roles.",
+        "Responsibilities": "Maintain and optimize IT infrastructure, ensure network security, support end-users, manage system backups and disaster recovery plans. Bengaluru, Karnataka; open for relocation. B.E / B.Tech in IT, Computer Science, or related fields."
+    },
+    "JD7": {
+        "Title": "QA Analyst",
+        "Skills": "Experience in manual and automated testing, familiarity with Agile methodologies, proficiency in testing tools like Selenium, JIRA, and QTP.",
+        "Requirements": "Minimum 3 years of relevant experience in QA or software testing.",
+        "Responsibilities": "Develop and execute test cases, manage bug tracking and resolution, work closely with development teams to ensure quality standards. Hyderabad, Telangana, with flexibility for remote work. Bachelor\u2019s degree in Computer Science, Engineering, or a related field."
+    }
+}
