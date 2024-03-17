@@ -24,11 +24,11 @@ nlp = spacy.load("model")
 
 
 models_paths = {
-    'JD1': 'xgb_model_JD_JD1.pkl',
-    'JD2': 'xgb_model_JD_JD2.pkl',
-    'JD3': 'xgb_model_JD_JD3.pkl',
-    'JD4': 'xgb_model_JD_JD4.pkl',
-    'JD5': 'xgb_model_JD_JD5.pkl',
+    'JD1': 'xgb_model_JD1.pkl',
+    'JD2': 'xgb_model_JD2.pkl',
+    'JD3': 'xgb_model_JD3.pkl',
+    'JD4': 'xgb_model_JD4.pkl',
+    'JD5': 'xgb_model_JD5.pkl',
 }
 
 
