@@ -48,7 +48,6 @@ def save_jd_to_file(jd_db, filename):
 # Khởi tạo JD DB từ tập tin
 jd_db = load_jd_from_file('jd_data.json')
 
-
 #Các hàm tiền xử lý pdf file
 # đọc và trích data từ pdf
 def pdf_to_text(pdf_path):
@@ -351,81 +350,71 @@ def main():
     uploaded_files = st.file_uploader("Choose PDF files", accept_multiple_files=True, type=['pdf'])
 
     if uploaded_files:
-        for uploaded_file in uploaded_files:
-            st.write(f"## {uploaded_file.name}")
-            # Convert PDF to list of images
-            images = pdf_to_images(uploaded_file)
+      for uploaded_file_idx, uploaded_file in enumerate(uploaded_files):
+          st.write(f"## {uploaded_file.name}")
+          # Convert PDF to list of images
+          images = pdf_to_images(uploaded_file)
 
-            # Display each page as an image with a single "Next" button
-            page_number = st.empty()  # Placeholder to display current page number
-            current_page = 0
-            total_pages = len(images)
-            while current_page < total_pages:
-                st.image(images[current_page], caption=f"Page {current_page+1}", use_column_width=True)
-                # Display current page number
-                page_number.write(f"Page {current_page+1} of {total_pages}")
-                # Display "Next" button with a unique key
-                if current_page < total_pages - 1:
-                    if st.button("Next" + str(current_page)):
-                        current_page += 1
-                        st.empty()  # Clear previous image and page number
-                    else:
-                        break  # Exit loop if "Next" button is not clicked
-                else:
-                    st.write("End of document")
-                    break
+          # Display each page as an image with a single "Next" button
+          page_number = st.empty()  # Placeholder to display current page number
+          current_page = 0
+          total_pages = len(images)
+          while current_page < total_pages:
+              st.image(images[current_page], caption=f"Page {current_page+1}", use_column_width=True)
+              # Display current page number
+              page_number.write(f"Page {current_page+1} of {total_pages}")
+              # Display "Next" button with a unique key combining file index and page number
+              next_key = f"next_{uploaded_file_idx}_{current_page}"
+              if st.button("Next", key=next_key):
+                  current_page += 1
+                  st.empty()  # Clear previous image and page number
+              else:
+                  break  # Exit loop if "Next" button is not clicked
+          else:
+              st.write("End of document")
 
-            # Xử lý nội dung từng tệp PDF
-            text = pdf_to_text(uploaded_file)
-            #st.write(f"Content of {uploaded_file.name}:")
-            #st.text(text[:500])  # Hiển thị một phần của nội dung để kiểm tra
+          # Process content of each PDF file
+          text = pdf_to_text(uploaded_file)
+          # st.write(f"Content of {uploaded_file.name}:")
+          # st.text(text[:500])  # Display a part of the content to check
 
-            candidate_data = extract_info(text)
-            candidate_data = pd.DataFrame([candidate_data])  # Chuyển từ dict sang DataFrame
+          candidate_data = extract_info(text)
+          candidate_data = pd.DataFrame([candidate_data])  # Convert from dict to DataFrame
 
-            # Tiếp tục chỉ khi bst đã được khởi tạo
-            if bst:
-                jd_info = jd_db[selected_jd]
-                df_preprocessed = preprocess(candidate_data, jd_info)
+          # Continue only if bst has been initialized
+          if bst:
+              jd_info = jd_db[selected_jd]
+              df_preprocessed = preprocess(candidate_data, jd_info)
+              df_preprocessed = df_preprocessed.drop(columns=['name', 'mail'], errors='ignore')
 
-                # Remove unwanted columns for XGBoost
-                df_preprocessed = df_preprocessed.drop(columns=['name', 'mail'], errors='ignore')
+              # Convert the new data into DMatrix
+              # new_data_dmatrix = xgb.DMatrix(df_preprocessed)
 
-                # Chuyển đổi dữ liệu mới thành DMatrix
-                #new_data_dmatrix = xgb.DMatrix(df_preprocessed)
+              # Use the trained model to predict
+              new_preds = bst.predict(df_preprocessed)
 
-                # Using the trained model to predict
-                new_preds = bst.predict(df_preprocessed)
+              # Apply np.argmax based on the shape of new_preds
+              if len(new_preds.shape) > 1 and new_preds.shape[1] > 1:
+                  candidate_data['Predicted'] = np.argmax(new_preds, axis=1)
+              else:
+                  candidate_data['Predicted'] = new_preds
 
-                # Apply np.argmax based on the shape of new_preds
-                if len(new_preds.shape) > 1 and new_preds.shape[1] > 1:
-                    # If new_preds is a multi-dimensional array with more than one column
-                    candidate_data['Predicted'] = np.argmax(new_preds, axis=1)
-                else:
-                    # If new_preds is a one-dimensional array
-                    candidate_data['Predicted'] = new_preds
+              # Display results
+              with st.container():
+                  st.write(f"Results for the profile of {uploaded_file.name}:")
 
-                # Hiển thị kết quả
-                with st.container():
-                    st.write(f"Kết quả cho hồ sơ của {uploaded_file.name}:")
+                  if 'Predicted' in candidate_data.columns:
+                      candidate_data['Predicted'] = candidate_data['Predicted'].map({0: 'Not suitable', 1: 'Potential candidate', 2: 'Suitable candidate'})
 
-                    if 'Predicted' in candidate_data.columns:
-                        # Chuyển đổi lớp dự đoán từ số sang chữ
-                        candidate_data['Predicted'] = candidate_data['Predicted'].map({0: 'Không phù hợp', 1: 'Ứng cử viên tiềm năng', 2: 'Ứng cử viên phù hợp'})
-
-                        # Lọc ra các ứng viên có dự đoán không phải là 'Không phù hợp'
-                        suitable_candidates = candidate_data[candidate_data['Predicted'] != 'Không phù hợp']
-
-                        if not suitable_candidates.empty:
-                            st.write("Các ứng viên phù hợp:")
-                            # Chỉ hiển thị tên, email và dự đoán
-                            st.dataframe(suitable_candidates[['name', 'mail', 'Predicted']])
-                        else:
-                            st.write("Không tìm thấy ứng viên phù hợp dựa trên tiêu chí.")
-                    else:
-                        st.error("Kết quả dự đoán không khả dụng. Vui lòng kiểm tra xem mô hình đã tạo ra dự đoán chưa.")
-            else:
-                st.error("Model could not be loaded.")
-
+                      suitable_candidates = candidate_data[candidate_data['Predicted'] != 'Not suitable']
+                      if not suitable_candidates.empty:
+                          st.write("Suitable candidates:")
+                          st.dataframe(suitable_candidates[['name', 'mail', 'Predicted']])
+                      else:
+                          st.write("No suitable candidates found based on the criteria.")
+                  else:
+                      st.error("Prediction results unavailable. Please check if the model has generated predictions.")
+          else:
+              st.error("Model could not be loaded.")
 if __name__ == "__main__":
     main()
